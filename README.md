@@ -7,4 +7,7 @@
 -Login Form
 -Sign up Form
 -Form Validation
--UseRef
+-UseRef Hook
+-Firebase Setup
+-Deploying our app to production
+-Create SignUp in Firebase

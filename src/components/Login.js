@@ -2,14 +2,20 @@ import React from "react";
 import Header from "./Header";
 import { useState, useRef } from "react";
 import { validateEP } from "../utils/validateEP";
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
+import { createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile} from "firebase/auth";
 import {auth} from "../utils/firebase"
+import { useDispatch } from "react-redux";
+import {addUser} from "../utils/userSlice"
+import { user_Avatar } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true); // true = Sign In
 
   const email = useRef(null);
   const password = useRef(null);
+  const displayName = useRef(null);
+  const dispatch=useDispatch();
+
   const [errorMessage, setErrorMessage] = useState(null);
 
   const handleButtonClick = () => {
@@ -25,13 +31,25 @@ createUserWithEmailAndPassword(auth, email.current.value, password.current.value
   .then((userCredential) => {
     // Signed up 
     const user = userCredential.user;
-    console.log(user);
+    updateProfile(auth.currentUser, {
+  displayName: displayName.current.value, photoURL: user_Avatar
+}).then(() => {
+  // Profile updated!
+    const { uid, email:userEmail, displayName:userDisplayName, photoURL } = auth.currentUser;
+      dispatch(addUser({ uid, email:userEmail, displayName:userDisplayName, photoURL }));
+
+
+}).catch((error) => {
+  // An error occurred
+  // .
+  setErrorMessage("Error occured in updating user profile.");
+});
     // ...
   })
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
-    setErrorMessage(errorCode+" ->"+errorMessage);
+    setErrorMessage(errorCode+"    "+errorMessage);
     // ..
   });
 
@@ -39,8 +57,9 @@ createUserWithEmailAndPassword(auth, email.current.value, password.current.value
       signInWithEmailAndPassword(auth, email.current.value, password.current.value)
   .then((userCredential) => {
     // Signed in 
-    const user = userCredential.user;
-    console.log(user);
+    const { uid, email: userEmail, displayName:userDisplayname, photoURL } = userCredential.user;
+    dispatch(addUser({ uid, email: userEmail, displayName:userDisplayname, photoURL }));    
+
     // ...
   })
   .catch((error) => {
@@ -82,6 +101,7 @@ createUserWithEmailAndPassword(auth, email.current.value, password.current.value
             type="text"
             placeholder="Full Name"
             className="p-4 my-2 w-full bg-gray-700 rounded"
+            ref={displayName}
           />
         )}
 

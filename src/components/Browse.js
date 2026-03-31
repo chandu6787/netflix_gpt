@@ -1,15 +1,21 @@
 import Header from './Header'
-import addNowPlayingMovies  from '../hooks/useNowPlayingMovies'
+import useNowPlayingMovies  from '../hooks/useNowPlayingMovies'
+import usePopularMovies from '../hooks/usePopularMovies';
+import useTopRatedMovies from '../hooks/useTopRatedMovies';
+import useUpcomingMovies from '../hooks/useUpcomingMovies';
 import MainContainer from './MainContainer';
 import SecondaryContainer from './SecondaryContainer';
 const Browse = () => {
-   addNowPlayingMovies();
+   useNowPlayingMovies();
+   usePopularMovies();
+   useTopRatedMovies();
+   useUpcomingMovies();
   return (
-    <>
+    <div className='' style={{scrollbarWidth:'none', msOverflowStyle:'none'}}>
     <Header/>
     <MainContainer/>
     <SecondaryContainer/>
-    </>
+    </div>
   )
 }
 

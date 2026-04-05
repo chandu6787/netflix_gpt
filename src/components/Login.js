@@ -2,143 +2,126 @@ import React from "react";
 import Header from "./Header";
 import { useState, useRef } from "react";
 import { validateEP } from "../utils/validateEP";
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile} from "firebase/auth";
-import {auth} from "../utils/firebase"
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 import { useDispatch } from "react-redux";
-import {addUser} from "../utils/userSlice"
-import { user_Avatar } from "../utils/constants";
+import { addUser } from "../utils/userSlice";
+import { user_Avatar, BG_URL } from "../utils/constants";
 
 const Login = () => {
-  const [isSignInForm, setIsSignInForm] = useState(true); // true = Sign In
+  const [isSignInForm, setIsSignInForm] = useState(true);
 
   const email = useRef(null);
   const password = useRef(null);
   const displayName = useRef(null);
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
   const [errorMessage, setErrorMessage] = useState(null);
 
   const handleButtonClick = () => {
-    // validate + call Firebase
     const message = validateEP(email.current.value, password.current.value);
     setErrorMessage(message);
-    if(message)
-      return;
-    if(!isSignInForm)
-    {
+    if (message) return;
 
-createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    updateProfile(auth.currentUser, {
-  displayName: displayName.current.value, photoURL: user_Avatar
-}).then(() => {
-  // Profile updated!
-    const { uid, email:userEmail, displayName:userDisplayName, photoURL } = auth.currentUser;
-      dispatch(addUser({ uid, email:userEmail, displayName:userDisplayName, photoURL }));
-
-
-}).catch((error) => {
-  // An error occurred
-  // .
-  setErrorMessage("Error occured in updating user profile.");
-});
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    setErrorMessage(errorCode+"    "+errorMessage);
-    // ..
-  });
-
-    }else{
+    if (!isSignInForm) {
+      createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+        .then((userCredential) => {
+          updateProfile(auth.currentUser, {
+            displayName: displayName.current.value,
+            photoURL: user_Avatar,
+          })
+            .then(() => {
+              const { uid, email: userEmail, displayName: userDisplayName, photoURL } =
+                auth.currentUser;
+              dispatch(addUser({ uid, email: userEmail, displayName: userDisplayName, photoURL }));
+            })
+            .catch(() => setErrorMessage("Error updating profile."));
+        })
+        .catch((error) => setErrorMessage(error.code + "  " + error.message));
+    } else {
       signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed in 
-    const { uid, email: userEmail, displayName:userDisplayname, photoURL } = userCredential.user;
-    dispatch(addUser({ uid, email: userEmail, displayName:userDisplayname, photoURL }));    
-
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    setErrorMessage(errorCode+"->"+errorMessage);
-  });
-
-
+        .then((userCredential) => {
+          const { uid, email: userEmail, displayName: userDisplayName, photoURL } =
+            userCredential.user;
+          dispatch(addUser({ uid, email: userEmail, displayName: userDisplayName, photoURL }));
+        })
+        .catch((error) => setErrorMessage(error.code + " -> " + error.message));
     }
-    
   };
 
-  const toggleSignInForm = () => {
-    setIsSignInForm(!isSignInForm);
-  };
+  const toggleSignInForm = () => setIsSignInForm(!isSignInForm);
+
   return (
     <div className="relative min-h-screen">
       <Header />
 
-      <div className="absolute inset-0 -z-10 ">
-        <img
-          className="w-full h-full object-cover"
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/eb110559-67e9-40ec-8f1c-4a45b9f9c9bb/web/IN-en-20260309-TRIFECTA-perspective_6796824d-3538-42c9-95e0-baabc0fdbadf_small.jpg"
-          alt="background"
-        />
+      {/* Background */}
+      <div className="absolute inset-0 -z-10">
+        <img className="w-full h-full object-cover" src={BG_URL} alt="background" />
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-black/60 md:bg-black/40" />
       </div>
-      <form
-        className="absolute p-12 bg-black bg-opacity-80 w-3/12 mx-auto right-0 left-0 top-[15%] rounded-lg text-white"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <h1 className="text-3xl font-bold mb-7">
-          {isSignInForm ? "Sign In" : "Sign Up"}
-        </h1>
 
-        {/* Name field — only for Sign Up */}
-        {!isSignInForm && (
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="p-4 my-2 w-full bg-gray-700 rounded"
-            ref={displayName}
-          />
-        )}
-
-        <input
-          ref={email}
-          type="email"
-          placeholder="Email Address"
-          className="p-4 my-2 w-full bg-gray-700 rounded"
-        />
-
-        <input
-          ref={password}
-          type="password"
-          placeholder="Password"
-          className="p-4 my-2 w-full bg-gray-700 rounded"
-        />
-        <p className="text-red-500">{errorMessage}</p>
-
-        <button
-          onClick={handleButtonClick}
-          type="button"
-          className="p-4 my-4 bg-red-600 w-full rounded font-bold"
+      {/* Form Card */}
+      <div className="flex items-center justify-center min-h-screen px-4 py-24">
+        <form
+          className="w-full max-w-sm sm:max-w-md bg-black/85 backdrop-blur-sm px-8 py-10 sm:px-12 rounded-xl text-white shadow-2xl"
+          onSubmit={(e) => e.preventDefault()}
         >
-          {isSignInForm ? "Sign In" : "Sign Up"}
-        </button>
+          <h1 className="text-3xl font-bold mb-6">
+            {isSignInForm ? "Sign In" : "Sign Up"}
+          </h1>
 
-        {/* Toggle between Sign In / Sign Up */}
-        <p className="mt-4 text-gray-400">
-          {isSignInForm ? "New to Netflix? " : "Already registered? "}
-          <span
-            onClick={toggleSignInForm}
-            className="text-white cursor-pointer font-bold"
+          {!isSignInForm && (
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="p-4 my-2 w-full bg-zinc-700/80 rounded-md border border-zinc-600 focus:border-white focus:outline-none transition-colors placeholder-gray-400 text-sm"
+              ref={displayName}
+            />
+          )}
+
+          <input
+            ref={email}
+            type="email"
+            placeholder="Email Address"
+            className="p-4 my-2 w-full bg-zinc-700/80 rounded-md border border-zinc-600 focus:border-white focus:outline-none transition-colors placeholder-gray-400 text-sm"
+          />
+
+          <input
+            ref={password}
+            type="password"
+            placeholder="Password"
+            className="p-4 my-2 w-full bg-zinc-700/80 rounded-md border border-zinc-600 focus:border-white focus:outline-none transition-colors placeholder-gray-400 text-sm"
+          />
+
+          {errorMessage && (
+            <p className="text-red-400 text-sm mt-1 px-1">{errorMessage}</p>
+          )}
+
+          <button
+            onClick={handleButtonClick}
+            type="button"
+            className="p-4 mt-6 mb-2 bg-red-600 hover:bg-red-700 active:bg-red-800 w-full rounded-md font-bold text-base tracking-wide transition-colors"
           >
-            {isSignInForm ? "Sign Up Now" : "Sign In Now"}
-          </span>
-        </p>
-      </form>
+            {isSignInForm ? "Sign In" : "Sign Up"}
+          </button>
+
+          <p className="mt-5 text-gray-400 text-sm">
+            {isSignInForm ? "New to Netflix? " : "Already registered? "}
+            <span
+              onClick={toggleSignInForm}
+              className="text-white cursor-pointer font-semibold hover:underline"
+            >
+              {isSignInForm ? "Sign Up Now" : "Sign In Now"}
+            </span>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };

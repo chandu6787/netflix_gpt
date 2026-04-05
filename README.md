@@ -38,5 +38,9 @@
 -Made the browse page amazing with Tailwind CSS
 -Built custom hooks for fetching movie data and updating the 
  store
+ -GPT Search Page
+ -GPT Search Bar
+ -Mulit-language Feature in our App
+ -
 
 

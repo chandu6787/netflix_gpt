@@ -23,7 +23,7 @@ const TrailerModal = ({ trailerKey, loading, title, onClose }) => {
   const renderBody = () => {
     if (loading) {
       return (
-        <div className="w-full aspect-video bg-zinc-900 rounded-b-xl flex flex-col items-center justify-center gap-3">
+        <div className="w-full h-full sm:aspect-video sm:h-auto bg-zinc-900 sm:rounded-b-xl flex flex-col items-center justify-center gap-3">
           <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin" />
           <p className="text-gray-400 text-sm">Loading trailer...</p>
         </div>
@@ -31,7 +31,7 @@ const TrailerModal = ({ trailerKey, loading, title, onClose }) => {
     }
     if (!trailerKey) {
       return (
-        <div className="w-full aspect-video bg-zinc-900 rounded-b-xl flex flex-col items-center justify-center gap-2">
+        <div className="w-full h-full sm:aspect-video sm:h-auto bg-zinc-900 sm:rounded-b-xl flex flex-col items-center justify-center gap-2">
           <span className="text-4xl">🎬</span>
           <p className="text-gray-300 font-medium text-sm">No trailer available</p>
           <p className="text-gray-500 text-xs">TMDB has no video for this title</p>
@@ -39,7 +39,7 @@ const TrailerModal = ({ trailerKey, loading, title, onClose }) => {
       );
     }
     return (
-      <div className="relative w-full aspect-video bg-black rounded-b-xl overflow-hidden">
+      <div className="relative w-full h-full sm:h-auto sm:aspect-video bg-black sm:rounded-b-xl overflow-hidden">
         <iframe
           className="w-full h-full scale-[1.01]"
           src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0`}
@@ -47,7 +47,7 @@ const TrailerModal = ({ trailerKey, loading, title, onClose }) => {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
-        {/* Mask YouTube title bar at top — extra tall to cover white line */}
+        {/* Mask YouTube title bar at top */}
         <div className="absolute top-0 left-0 w-full h-16 bg-black pointer-events-none" />
         {/* Mask YouTube progress bar + branding at bottom */}
         <div className="absolute bottom-0 left-0 w-full h-14 bg-black pointer-events-none" />
@@ -57,7 +57,7 @@ const TrailerModal = ({ trailerKey, loading, title, onClose }) => {
             className="h-full bg-red-600 rounded-full"
             style={{
               animation: "progress linear 1 forwards",
-              animationDuration: "180s", // adjust to match your average trailer length
+              animationDuration: "180s",
             }}
           />
         </div>
@@ -76,12 +76,21 @@ const TrailerModal = ({ trailerKey, loading, title, onClose }) => {
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-sm"
       onClick={onClose}
     >
+      {/* Mobile: full screen | sm+: floating centered modal */}
       <div
-        className="relative w-[92vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-4xl"
+        className="
+          relative flex flex-col
+          w-full h-full
+          sm:w-[80vw] sm:h-auto
+          md:w-[70vw]
+          lg:w-[60vw]
+          sm:max-w-4xl
+          sm:rounded-xl
+        "
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header bar */}
-        <div className="flex items-center justify-between bg-zinc-900 px-4 py-3 rounded-t-xl border-b border-white/10">
+        <div className="flex items-center justify-between bg-zinc-900 px-4 py-3 sm:rounded-t-xl border-b border-white/10 shrink-0">
           <h2 className="text-white font-semibold text-sm sm:text-base truncate pr-4">
             {title || "Trailer"}
           </h2>
@@ -94,13 +103,14 @@ const TrailerModal = ({ trailerKey, loading, title, onClose }) => {
           </button>
         </div>
 
-        {renderBody()}
+        {/* Video fills remaining height on mobile, auto height on desktop */}
+        <div className="flex-1 sm:flex-none min-h-0">
+          {renderBody()}
+        </div>
       </div>
     </div>
   );
 
-  // Portal renders modal directly into document.body,
-  // escaping any parent transforms/stacking contexts
   return ReactDOM.createPortal(modalContent, document.body);
 };
 

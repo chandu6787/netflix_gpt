@@ -60,6 +60,7 @@ npm start
 ![alt text](https://github.com/chandu6787/netflix_gpt/blob/bbee88ee4e81b5dd67e45518ba35d16cb29d0796/Screenshot%202026-05-12%20084617.png)
 ![alt text](https://github.com/chandu6787/netflix_gpt/blob/feb0cba0ad981f826896c816dbe32ab643bf68f2/Screenshot%202026-05-12%20084637.png)
 ![alt text](https://github.com/chandu6787/netflix_gpt/blob/c2d29b7d3e5ed877926ab5a99a0dcc67f6477fbd/Screenshot%202026-05-12%20084701.png)
+![alt text](https://github.com/chandu6787/netflix_gpt/blob/10175ec3d116fd036748a9aee209ac6dc7b5dd45/Screenshot%202026-05-12%20084717.png)
 
 ---
 

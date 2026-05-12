@@ -57,6 +57,7 @@ npm start
 ## 📸 Screenshots
 
 <!-- Add screenshots here -->
+![alt text](https://your-image-url.com/image.png)
 
 ---
 

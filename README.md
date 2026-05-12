@@ -57,7 +57,7 @@ npm start
 ## 📸 Screenshots
 
 <!-- Add screenshots here -->
-![alt text](https://your-image-url.com/image.png)
+![alt text](https://github.com/chandu6787/netflix_gpt/blob/bbee88ee4e81b5dd67e45518ba35d16cb29d0796/Screenshot%202026-05-12%20084617.png)
 
 ---
 

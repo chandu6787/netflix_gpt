@@ -92,13 +92,29 @@ const Header = () => {
           </div>
 
           {/* Sign out */}
-          <button
-            onClick={handleSignOut}
-            className="flex items-center gap-1 text-xs sm:text-sm text-gray-300 hover:text-white border border-gray-600 hover:border-white px-3 sm:px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/10 whitespace-nowrap"
-          >
-            <span>⏻</span>
-            <span className="hidden sm:inline">Sign Out</span>
-          </button>
+          {/* Sign out */}
+<button
+  onClick={handleSignOut}
+  className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-200 hover:text-white border border-gray-500 hover:border-white px-3 sm:px-4 py-2 min-h-[36px] rounded-full transition-all duration-300 hover:bg-white/10 whitespace-nowrap active:scale-95"
+>
+  {/* Cross icon — mobile only */}
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-3.5 h-3.5 sm:hidden shrink-0"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+
+  {/* Text — sm and above only */}
+  <span className="hidden sm:inline">Sign Out</span>
+</button>
         </div>
       )}
     </div>
